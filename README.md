@@ -52,6 +52,12 @@ The pipeline applied dual-stage mitigation before distributed training.
 
 ---
 
+## Data Availability
+The original dataset used in this project contains approximately **19 million agricultural trial records stored across 253 Parquet files**.
+Due to size and data sharing restrictions, the full dataset is **not included in this repository**.
+This repository contains a **small sample dataset (`Data/Sample data.xlsx`)** that demonstrates the pipeline structure and code functionality.
+The full pipeline was executed on the complete dataset using **PySpark and distributed LightGBM**, as described in the accompanying report.
+
 # Feature Correlation Analysis
 
 ![Feature Correlation](Images/feature_correlation.png)
