@@ -10,7 +10,7 @@ The system processes **19 million agricultural records** and demonstrates that n
 
 # Project Workflow
 
-![Pipeline Workflow](images/pipeline_workflow.png)
+![Pipeline Workflow](Images/pipeline_workflow.png)
 
 The framework uses a **two-phase pipeline**:
 
@@ -54,7 +54,7 @@ The pipeline applied dual-stage mitigation before distributed training.
 
 # Feature Correlation Analysis
 
-![Feature Correlation](images/feature_correlation.png)
+![Feature Correlation](Images/feature_correlation.png)
 
 The most influential predictors for crop yield include:
 
@@ -107,7 +107,7 @@ This process reconstructs corrupted signals while preserving real agronomic vari
 
 # Model Performance
 
-![RMSE Comparison](images/rmse_comparison.png)
+![RMSE Comparison](Images/rmse_comparison.png)
 
 Noise severely degraded model performance:
 
@@ -123,7 +123,7 @@ The mitigation pipeline recovered **over 90% of lost predictive accuracy**.
 
 # Yield Variability Recovery
 
-![Yield Variability](images/yield_variability.png)
+![Yield Variability](Images/yield_variability.png)
 
 Noise increased yield variance dramatically.
 
@@ -137,7 +137,7 @@ bringing it close to the clean data baseline.
 
 # Scalability Performance
 
-![Runtime Scaling](images/runtime_scaling.png)
+![Runtime Scaling](Images/runtime_scaling.png)
 
 The distributed Spark pipeline scaled efficiently:
 
