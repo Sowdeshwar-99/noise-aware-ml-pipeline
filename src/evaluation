@@ -1,0 +1,169 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from pyspark.sql import functions as F
+
+
+# RMSE comparison plot
+def plot_rmse_comparison():
+
+    noise_lvl = ["20%", "30%", "50%"]
+
+    rmse_clean = [412.73, 412.73, 412.73]
+    rmse_noisy = [1106.04, 1299.82, 1604.34]
+    rmse_mitig = [411.44, 445.55, 513.49]
+
+    x = np.arange(len(noise_lvl))
+    width = 0.25
+
+    plt.figure(figsize=(8,5))
+
+    plt.bar(x - width, rmse_clean, width, label="Clean", color="green")
+    plt.bar(x, rmse_noisy, width, label="Noisy", color="red")
+    plt.bar(x + width, rmse_mitig, width, label="Mitigated", color="gold")
+
+    plt.xlabel("Noise Level (%)", fontsize=12)
+    plt.ylabel("RMSE", fontsize=12)
+    plt.title("RMSE Comparison Across Noise Levels", fontsize=14, weight="bold")
+
+    plt.xticks(x, noise_lvl)
+
+    plt.legend()
+    plt.grid(axis="y", linestyle="--", alpha=0.6)
+
+    plt.tight_layout()
+    plt.show()
+
+
+# Yield variability plot
+def plot_yield_variability(dfs):
+
+    def get_yield_std(df):
+
+        for col in ["yield_mitigated", "yield_noisy", "yield"]:
+            if col in df.columns:
+                return df.select(F.stddev(F.col(col)).alias("std")).collect()[0][0]
+
+        return None
+
+    yield_std = {
+        "Clean": get_yield_std(dfs["Clean"]),
+        "Noisy_20": get_yield_std(dfs["Noisy_20"]),
+        "Noisy_30": get_yield_std(dfs["Noisy_30"]),
+        "Noisy_50": get_yield_std(dfs["Noisy_50"]),
+        "Mitigated_20": get_yield_std(dfs["Mitigated_20"]),
+        "Mitigated_30": get_yield_std(dfs["Mitigated_30"]),
+        "Mitigated_50": get_yield_std(dfs["Mitigated_50"]),
+    }
+
+    noise_lvl = ["20%", "30%", "50%"]
+
+    clean_vals = [yield_std["Clean"]] * 3
+
+    noisy_vals = [
+        yield_std["Noisy_20"],
+        yield_std["Noisy_30"],
+        yield_std["Noisy_50"]
+    ]
+
+    mitig_vals = [
+        yield_std["Mitigated_20"],
+        yield_std["Mitigated_30"],
+        yield_std["Mitigated_50"]
+    ]
+
+    x = np.arange(len(noise_lvl))
+    width = 0.25
+
+    plt.figure(figsize=(8,5))
+
+    plt.bar(x - width, clean_vals, width, label="Clean", color="#4C72B0")
+    plt.bar(x, noisy_vals, width, label="Noisy", color="#C44E52")
+    plt.bar(x + width, mitig_vals, width, label="Mitigated", color="#55A868")
+
+    plt.title("Yield Variability Across Noise Levels", fontsize=13, weight="bold")
+
+    plt.xlabel("Noise Level (%)", fontsize=12)
+    plt.ylabel("Standard Deviation of Yield", fontsize=12)
+
+    plt.xticks(x, noise_lvl)
+
+    plt.legend()
+    plt.grid(axis="y", linestyle="--", alpha=0.5)
+
+    plt.tight_layout()
+    plt.show()
+
+
+# Feature variability plot
+def plot_feature_variability(dfs, features):
+
+    def get_std(df, feature):
+
+        if feature in df.columns:
+            return df.select(F.stddev(F.col(feature)).alias("std")).collect()[0][0]
+
+        return None
+
+    noise_lvl = [20, 30, 50]
+
+    colors = {
+        "Clean": "#4C72B0",
+        "Noisy": "#C44E52",
+        "Mitigated": "#55A868"
+    }
+
+    for f in features:
+
+        clean_std = get_std(dfs["Clean"], f)
+
+        noisy_vals = [
+            get_std(dfs["Noisy_20"], f),
+            get_std(dfs["Noisy_30"], f),
+            get_std(dfs["Noisy_50"], f)
+        ]
+
+        mitig_vals = [
+            get_std(dfs["Mitigated_20"], f),
+            get_std(dfs["Mitigated_30"], f),
+            get_std(dfs["Mitigated_50"], f)
+        ]
+
+        plt.figure(figsize=(7,5))
+
+        plt.plot(
+            noise_lvl,
+            [clean_std]*3,
+            marker="o",
+            color=colors["Clean"],
+            label="Clean",
+            linestyle="--"
+        )
+
+        plt.plot(
+            noise_lvl,
+            noisy_vals,
+            marker="o",
+            color=colors["Noisy"],
+            label="Noisy"
+        )
+
+        plt.plot(
+            noise_lvl,
+            mitig_vals,
+            marker="o",
+            color=colors["Mitigated"],
+            label="Mitigated"
+        )
+
+        plt.title(f"{f} Variability Across Noise Levels", fontsize=13, weight="bold")
+
+        plt.xlabel("Noise Level (%)")
+        plt.ylabel("Standard Deviation")
+
+        plt.xticks(noise_lvl)
+
+        plt.grid(alpha=0.3)
+        plt.legend()
+
+        plt.tight_layout()
+        plt.show()
