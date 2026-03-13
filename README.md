@@ -107,7 +107,7 @@ This process reconstructs corrupted signals while preserving real agronomic vari
 
 # Model Performance
 
-![RMSE Comparison](Images/rmse_comparison.png)
+![RMSE Comparison](Images/RMSE_Comparison.png)
 
 Noise severely degraded model performance:
 
